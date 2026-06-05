@@ -3,10 +3,18 @@ const cors = require('cors');
 require('dotenv').config();
 
 const db = require('./db/index');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api/auth', authRoutes);
+
+const protect = require('./middleware/auth');
+
+app.get('/api/auth/test-protected', protect, (req, res) => {
+  res.json({ message: 'You are authenticated', user: req.user });
+});
 
 app.get('/', (req, res) => res.json({ message: 'HireView API running' }));
 
